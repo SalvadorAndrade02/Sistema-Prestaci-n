@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import '~bootstrap/dist/css/bootstrap.min.css';
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
