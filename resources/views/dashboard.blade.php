@@ -83,9 +83,13 @@
             });
         });
     </script>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.5.1/uicons-bold-rounded/css/uicons-bold-rounded.css'>
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.5.1/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.5.1/uicons-solid-rounded/css/uicons-solid-rounded.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.5.1/uicons-solid-rounded/css/uicons-solid-rounded.css'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.5.1/uicons-solid-straight/css/uicons-solid-straight.css'>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <section class="hero" style="background-color: #1F2937;">
         <div class="hero-body">
@@ -108,11 +112,50 @@
                     </div>
                     @endif
                     <!-- Botón añadido aquí -->
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalAgregar">
-                        <i class="fi fi-rr-square-plus"></i> Agregar Prestación
-                    </button>
-                    <br><br>
-                    <!-- Modal -->
+                    <div class="columns">
+                        <div class="column is-9">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModalAgregar">
+                                <i class="fi fi-br-plus"></i> Agregar Prestación
+                            </button>
+                        </div>
+                        <div class="column is-3">
+                            <form action="{{ route('reporteGeneral.pdf') }}" method="GET">
+                                @csrf
+                                <button type="submit" class="btn btn-elegant" style="padding: 12px, 24px;">
+                                    <i style="color: black;" class="fi fi-sr-document-signed"></i> Generar Informe
+                                </button>
+                            </form>
+                            <style>
+                                .btn-elegant {
+                                    background-color: gray;
+                                    /* Verde elegante */
+                                    border: none;
+                                    color: black;
+                                    padding: 12px 24px;
+                                    text-align: center;
+                                    text-decoration: none;
+                                    display: inline-block;
+                                    font-size: 16px;
+                                    margin: 4px 2px;
+                                    cursor: pointer;
+                                    transition-duration: 0.4s;
+                                    border-radius: 12px;
+                                }
+
+                                .btn-elegant:hover {
+                                    background-color: white;
+                                    color: #4CAF50;
+                                    border: 2px solid #4CAF50;
+                                }
+
+                                .btn-elegant i {
+                                    margin-right: 8px;
+                                    /* Espacio entre el ícono y el texto */
+                                }
+                            </style>
+                        </div>
+                    </div>
+                    <!-- Modal de Agregar -->
                     <div class="modal fade" id="ModalAgregar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -121,53 +164,63 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form>
-                                        <label for="tables" style="color: black">Seleccione un área:</label>
-                                        <select class="form-select" aria-label="Default select example" name="tables" id="tables">
-                                            <option value="">-- Selecciona un área --</option>
-                                            @foreach($filteredTables as $table)
-                                            <option value="{{ $table }}">{{ $table }}</option>
-                                            @endforeach
-                                        </select>
-                                        <label style="color:black">Nombre de quien recibe</label>
-                                        <input type="text" class="form-control" name="nombreRecibe" id="nombreRecibe">
-                                        <label style="color:black">Artículo a Prestar</label>
-                                        <select class="form-select" aria-label="Default select example" name="tools" id="tools">
-                                            <option value="">-- Selecciona un artículo --</option>
-                                        </select>
-                                        <br>
-                                        <label style="color:black">Cantidad a prestar</label>
-                                        <input type="number" class="form-control" name="cantidad" id="cantidad">
-                                        <br>
-                                        <label class="alert alert-primary" style="color:black">Cantidad disponible del artículo:</label>
-                                        <input type="text" class="form-control alert alert-primary" id="cantidadDisponible" readonly>
-
-                                        <div class="columns">
-                                            <div class="column">
+                                    <form id="addForm" action="{{ route('prestaciones.create') }}" method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="tables" style="color: black">Seleccione un área:</label>
+                                            <select class="form-select" aria-label="Default select example" name="table" id="tables">
+                                                <option value="">-- Selecciona un área --</option>
+                                                @foreach($filteredTables as $table)
+                                                <option value="{{ $table }}">{{ $table }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label style="color:black">Nombre de quien recibe</label>
+                                            <input type="text" class="form-control" name="nombreRecibe" id="nombreRecibe">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label style="color:black">Artículo a Prestar</label>
+                                            <select class="form-select" aria-label="Default select example" name="tool" id="tools">
+                                                <option value="">-- Selecciona un artículo --</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label style="color:black">Cantidad a prestar</label>
+                                            <input type="number" class="form-control" name="cantidad" id="cantidad">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="alert alert-primary" style="color:black">Cantidad disponible del artículo:</label>
+                                            <input type="text" class="form-control alert alert-primary" id="cantidadDisponible" readonly>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col">
                                                 <label style="color:black">Fecha de Salida</label>
-                                                <br>
-                                                <input style="color:black" type="date" name="fechaSalida" id="fechaSalida">
+                                                <input style="color:black" type="date" class="form-control" name="fechaSalida" id="fechaSalida">
                                             </div>
-                                            <div class="column">
+                                            <div class="col">
                                                 <label style="color:black">Fecha de Regreso</label>
-                                                <br>
-                                                <input style="color:black" type="date" name="fechaRegreso" id="fechaRegreso">
+                                                <input style="color:black" type="date" class="form-control" name="fechaRegreso" id="fechaRegreso">
                                             </div>
                                         </div>
-                                        <label style="color:black" for="exampleFormControlTextarea1" class="form-label">Observación de entrega</label>
-                                        <textarea class="form-control" id="observacion" rows="3"></textarea>
-
-                                        <label style="color:black">Uso</label>
-                                        <input type="text" class="form-control" name="uso" id="uso">
+                                        <div class="mb-3">
+                                            <label style="color:black" for="exampleFormControlTextarea1" class="form-label">Observación de entrega</label>
+                                            <textarea class="form-control" name="observacion" id="observacion" rows="3"></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label style="color:black">Uso</label>
+                                            <input type="text" class="form-control" name="uso" id="uso">
+                                        </div>
                                     </form>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Enviar</button>
+                                    <button type="submit" class="btn btn-primary" form="addForm">Agregar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
 
                     <table class="table table-dark table-hover">
                         <thead>
@@ -181,20 +234,123 @@
                                 <th>Fecha de Regreso</th>
                                 <th>Observación</th>
                                 <th>Uso</th>
+                                <th>Acciones</th>
+                                <th></th>
+                                <th>Reporte</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($prestamos as $dato)
+                            @foreach($prestamos as $prestacion)
                             <tr>
-                                <td>{{ $dato->id }}</td>
-                                <td>{{ $dato->tables }}</td>
-                                <td>{{ $dato->nombreRecibe }}</td>
-                                <td>{{ $dato->tools }}</td>
-                                <td>{{ $dato->cantidad }}</td>
-                                <td>{{ $dato->fechaSalida }}</td>
-                                <td>{{ $dato->fechaRegreso }}</td>
-                                <td>{{ $dato->observacion }}</td>
-                                <td>{{ $dato->uso }}</td>
+                                <td>{{ $prestacion->id }}</td>
+                                <td>{{ $prestacion->area }}</td>
+                                <td>{{ $prestacion->nombreRecibe }}</td>
+                                <td>{{ $prestacion->articulo }}</td>
+                                <td>{{ $prestacion->cantidadPresta }}</td>
+                                <td>{{ $prestacion->fechaSalida }}</td>
+                                <td>{{ $prestacion->fechaRegreso }}</td>
+                                <td>{{ $prestacion->observacion }}</td>
+                                <td>{{ $prestacion->uso }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModalEditar{{ $prestacion->id }}">
+                                        <i class="fi fi-br-pencil"></i>
+                                    </button>
+
+                                    <!-- Modal de Editar -->
+                                    <div class="modal fade" id="ModalEditar{{ $prestacion->id }}" tabindex="-1" aria-labelledby="ModalEditarLabel{{ $prestacion->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="ModalEditarLabel{{ $prestacion->id }}" style="color: black;">Actualizar Prestación</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{{ route('prestaciones.update', $prestacion->id) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="mb-3">
+                                                            <label for="tables{{$prestacion->id}}" style="color: black">Seleccione un área:</label>
+                                                            <select class="form-select" aria-label="Default select example" name="table" id="tables{{$prestacion->id}}">
+                                                                <option value=""> </option>
+                                                                @foreach($filteredTables as $table)
+                                                                <option value="{{ $table }}" {{ $prestacion->area == $table ? 'selected' : '' }}>{{ $table }}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="nombreRecibe{{$prestacion->id}}" style="color:black">Nombre de quien recibe</label>
+                                                            <input type="text" class="form-control" name="nombreRecibe" id="nombreRecibe{{$prestacion->id}}" value="{{$prestacion->nombreRecibe}}">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="tools{{$prestacion->id}}" style="color:black">Artículo a Prestar</label>
+                                                            <select class="form-select" aria-label="Default select example" name="tool" id="tools{{$prestacion->id}}">
+                                                                <option value="{{$prestacion->articulo}}">{{$prestacion->articulo}}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="cantidad{{$prestacion->id}}" style="color:black">Cantidad a prestar</label>
+                                                            <input type="number" class="form-control" name="cantidad" id="cantidad{{$prestacion->id}}" value="{{$prestacion->cantidadPresta}}">
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col">
+                                                                <label for="fechaSalida{{$prestacion->id}}" style="color:black">Fecha de Salida</label>
+                                                                <input style="color:black" type="date" class="form-control" name="fechaSalida" id="fechaSalida{{$prestacion->id}}" value="{{$prestacion->fechaSalida}}">
+                                                            </div>
+                                                            <div class="col">
+                                                                <label for="fechaRegreso{{$prestacion->id}}" style="color:black">Fecha de Regreso</label>
+                                                                <input style="color:black" type="date" class="form-control" name="fechaRegreso" id="fechaRegreso{{$prestacion->id}}" value="{{$prestacion->fechaRegreso}}">
+                                                            </div>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label style="color:black" for="observacion{{$prestacion->id}}" class="form-label">Observación de entrega</label>
+                                                            <textarea class="form-control" name="observacion" id="observacion{{$prestacion->id}}" rows="3">{{$prestacion->observacion}}</textarea>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="uso{{$prestacion->id}}" style="color:black">Uso</label>
+                                                            <input type="text" class="form-control" name="uso" id="uso{{$prestacion->id}}" value="{{$prestacion->uso}}">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ModalDelete{{$prestacion->id}}">
+                                        <i class="fi fi-sr-trash"></i>
+                                    </button>
+                                    <!-- Modal de eliminar -->
+                                    <div class="modal fade" id="ModalDelete{{$prestacion->id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{$prestacion->id}}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel{{$prestacion->id}}" style="color: black;">Eliminar Prestación</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p style="color: black;">¿Seguro desea eliminar esta prestación?</p>
+                                                    <form action="{{ route('prestaciones.destroy', $prestacion->id)}}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td> <!-- Botón para generar PDF -->
+                                    <form action="{{ route('prestacion.pdf', $prestacion->id) }}" method="GET">
+                                        @csrf
+                                        <button type="submit" class="btn btn-primary"><i class="fi fi-ss-document-signed"></i></button>
+                                    </form>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
