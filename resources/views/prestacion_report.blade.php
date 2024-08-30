@@ -1,43 +1,83 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Informe de Prestacion</title>
     <style>
-        .signature-line {
-            margin-top: 50px;
-            margin-left: 250px;
-            border-top: 1px solid black;
-            text-align: center;
-            width: 200px;
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        .signature-label {
-            margin-top: 10px;
-            font-size: 18px;
+        /* Configuración de márgenes y elementos en la página */
+        @page {
+            margin: 150px 50px 100px 50px;
+        }
+
+        header {
+            position: fixed;
+            top: -120px;
+            left: 0;
+            right: 0;
+            height: 100px;
             text-align: center;
         }
 
-        .signature-container {
+        footer {
+            position: fixed;
+            bottom: -70px;
+            left: 0;
+            right: 0;
+            height: 50px;
             text-align: center;
-            margin-top: 100px;
+            font-size: 12px;
         }
 
-        /* Puedes añadir estilos aquí para el PDF */
+        .content {
+            margin-top: 20px;
+            margin-bottom: 50px;
+        }
+
+        /* Estilos para la tabla */
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
 
-        table,
         th,
         td {
             border: 1px solid black;
+            padding: 8px;
+            text-align: left;
         }
 
-        th,
-        td {
-            padding: 10px;
-            text-align: left;
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .bg-disponible {
+            background-color: #d4edda;
+        }
+
+        .bg-ocupado {
+            background-color: #f8d7da;
+        }
+        /* Estilo para la línea de firma */
+        .signature-line {
+            margin-top: 50px;
+            border-top: 1px solid black;
+            width: 200px;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .signature-text {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 12px;
         }
     </style>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
@@ -45,10 +85,10 @@
 
 <body>
     <header>
-        <img src="images\membrete 1.png" style="margin-left: -50; margin-top: -20">
+        <img src="images\membrete 1.png" style="width: 105%; height:auto">
     </header>
     <br>
-    <img src="images\titulo.png" style="margin-left: -50;">
+    <img src="images\titulo.png" style="width: 100%; height:auto">
     <br>
     <h1>Datos de Prestación</h1>
     <br>
@@ -97,12 +137,12 @@
     </p>
     <br>
     <div class="signature-container" style="text-align: center;">
-        <div class="signature-line" style="text-align: center;"></div>
         <div class="signature-label">Firma del Responsable</div>
+        <div class="signature-line" style="text-align: center;"></div>
     </div>
     <br>
     <footer class="footer">
-        <img src="images\menbrete pie.png" style="margin-left: -50;">
+        <img src="images\menbrete pie.png" style="width: 100%; height:auto">
     </footer>
 </body>
 

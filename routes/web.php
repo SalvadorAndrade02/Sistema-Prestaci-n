@@ -22,8 +22,12 @@ Route::get('/dashboard', [PrestamoController::class, 'index'], function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::post('prestaciones.create', [PrestamoController::class, 'create'])->name('prestaciones.create');
-Route::put('prestaciones.update {id}', [PrestamoController::class, 'update'])->name('prestaciones.update');
+/* Route::post('prestaciones.create', [PrestamoController::class, 'create'])->name('prestaciones.create');
+Route::put('prestaciones.update {id}', [PrestamoController::class, 'update'])->name('prestaciones.update'); */
+Route::match(['post', 'put'], '/prestamos/store-or-update/{id?}', [PrestamoController::class, 'storeOrUpdate'])
+    ->name('prestamos.storeOrUpdate');
+    
+Route::put('/prestamos/{id}/devolucion', [PrestamoController::class, 'devolver'])->name('prestamos.devolver');
 Route::delete('prestaciones.destroy {id}', [PrestamoController::class, 'destroy'])->name('prestaciones.destroy');
 Route::get('prestacion-pdf/{id}', [ReportController::class, 'generatePrestaPDF'])->name('prestacion.pdf');
 Route::get('report_general', [ReportController::class, 'reporteGeneral'])->name('reporteGeneral.pdf');

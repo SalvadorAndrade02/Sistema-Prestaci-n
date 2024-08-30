@@ -90,6 +90,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.5.1/uicons-solid-straight/css/uicons-solid-straight.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.5.1/uicons-regular-straight/css/uicons-regular-straight.css'>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <section class="hero" style="background-color: #1F2937;">
         <div class="hero-body">
@@ -114,7 +115,7 @@
                     <!-- Botón añadido aquí -->
                     <div class="columns">
                         <div class="column is-9">
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModalAgregar">
+                            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#ModalAgregar">
                                 <i class="fi fi-br-plus"></i> Agregar Prestación
                             </button>
                         </div>
@@ -164,7 +165,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="addForm" action="{{ route('prestaciones.create') }}" method="POST">
+                                    <form id="addForm" action="{{ route('prestamos.storeOrUpdate') }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="tables" style="color: black">Seleccione un área:</label>
@@ -214,7 +215,7 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                                     <button type="submit" class="btn btn-primary" form="addForm">Agregar</button>
                                 </div>
                             </div>
@@ -222,21 +223,22 @@
                     </div>
 
 
-                    <table class="table table-dark table-hover">
+                    <table class="table table-dark table-borderless">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Área</th>
-                                <th>Nombre quien recibe</th>
-                                <th>Artículo a Prestar</th>
-                                <th>Cantidad</th>
-                                <th>Fecha de Salida</th>
-                                <th>Fecha de Regreso</th>
-                                <th>Observación</th>
-                                <th>Uso</th>
-                                <th>Acciones</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">Área</th>
+                                <th scope="col">Nombre quien recibe</th>
+                                <th scope="col">Artículo a Prestar</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col">Fecha de Salida</th>
+                                <th scope="col">Fecha de Regreso</th>
+                                <th scope="col">Observación</th>
+                                <th scope="col">Uso</th>
                                 <th></th>
-                                <th>Reporte</th>
+                                <th></th>
+                                <th></th>
+                                <th scope="col">Reporte</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -252,10 +254,9 @@
                                 <td>{{ $prestacion->observacion }}</td>
                                 <td>{{ $prestacion->uso }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModalEditar{{ $prestacion->id }}">
+                                    <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal" data-bs-target="#ModalEditar{{ $prestacion->id }}">
                                         <i class="fi fi-br-pencil"></i>
                                     </button>
-
                                     <!-- Modal de Editar -->
                                     <div class="modal fade" id="ModalEditar{{ $prestacion->id }}" tabindex="-1" aria-labelledby="ModalEditarLabel{{ $prestacion->id }}" aria-hidden="true">
                                         <div class="modal-dialog">
@@ -265,7 +266,7 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <form action="{{ route('prestaciones.update', $prestacion->id) }}" method="POST">
+                                                    <form action="{{ route('prestamos.storeOrUpdate', $prestacion->id) }}" method="POST">
                                                         @csrf
                                                         @method('PUT')
                                                         <div class="mb-3">
@@ -318,10 +319,50 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 </td>
                                 <td>
-                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#ModalDelete{{$prestacion->id}}">
+                                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#devolucionModal" data-id="{{ $prestacion->id }}">
+                                        <i class="fi fi-rs-restock"></i>
+                                    </button>
+
+                                    <!-- Modal de Devolucion -->
+                                    <div class="modal fade" id="devolucionModal" tabindex="-1" aria-labelledby="devolucionModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="devolucionModalLabel" style="color: black;">Confirmar Devolución</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body" style="color: black;">
+                                                    ¿Estás seguro de que quieres devolver este artículo?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form id="devolucionForm" method="POST" action="">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-success">Confirmar</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            var devolucionModal = document.getElementById('devolucionModal');
+                                            devolucionModal.addEventListener('show.bs.modal', function(event) {
+                                                var button = event.relatedTarget; // Botón que disparó el modal
+                                                var prestamoId = button.getAttribute('data-id'); // Extraer el ID
+
+                                                var form = document.getElementById('devolucionForm');
+                                                form.action = '/prestamos/' + prestamoId + '/devolucion'; // Establecer la acción del formulario
+                                            });
+                                        });
+                                    </script>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#ModalDelete{{$prestacion->id}}">
                                         <i class="fi fi-sr-trash"></i>
                                     </button>
                                     <!-- Modal de eliminar -->
@@ -348,7 +389,7 @@
                                 <td> <!-- Botón para generar PDF -->
                                     <form action="{{ route('prestacion.pdf', $prestacion->id) }}" method="GET">
                                         @csrf
-                                        <button type="submit" class="btn btn-primary"><i class="fi fi-ss-document-signed"></i></button>
+                                        <button type="submit" class="btn btn-outline-primary"><i class="fi fi-ss-document-signed"></i></button>
                                     </form>
                                 </td>
                             </tr>
