@@ -226,7 +226,7 @@
                     <table class="table table-dark table-borderless">
                         <thead>
                             <tr>
-                                <th scope="col">ID</th>
+                                <!-- <th scope="col">ID</th> -->
                                 <th scope="col">Área</th>
                                 <th scope="col">Nombre quien recibe</th>
                                 <th scope="col">Artículo a Prestar</th>
@@ -244,7 +244,7 @@
                         <tbody>
                             @foreach($prestamos as $prestacion)
                             <tr>
-                                <td>{{ $prestacion->id }}</td>
+                                <!-- <td>{{ $prestacion->id }}</td> -->
                                 <td>{{ $prestacion->area }}</td>
                                 <td>{{ $prestacion->nombreRecibe }}</td>
                                 <td>{{ $prestacion->articulo }}</td>

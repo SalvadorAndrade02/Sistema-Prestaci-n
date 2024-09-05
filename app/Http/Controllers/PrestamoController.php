@@ -33,7 +33,7 @@ class PrestamoController extends Controller
     public function index(Request $request)
     {
         // List of specific tables to display in the dashboard
-        $specificTables = ['paileria', 'tabla_ejemplo', 'users'];
+        $specificTables = ['almacen', 'ingenieria', 'oficina_administrativa', 'paileria'];
 
         // Get all table names in the database
         $tablesInDatabase = DB::select('SHOW TABLES');
@@ -65,7 +65,7 @@ class PrestamoController extends Controller
     public function fetchTableData(Request $request)
     {
         $tableName = $request->input('table');
-        $specificTables = ['paileria', 'tabla_ejemplo', 'users'];
+        $specificTables = ['almacen', 'ingenieria', 'oficina_administrativa', 'paileria'];
 
         // Check if the table is in the list of specific tables
         if (!in_array($tableName, $specificTables)) {
@@ -147,12 +147,12 @@ class PrestamoController extends Controller
         $presta->uso = $request->input('uso');
 
         // Check stock before saving
-        $stock = DB::table($request->table)->where('nombre', $request->tool)->value('cantidad');
+        $stock = DB::table($request->table)->where('nombreherramienta', $request->tool)->value('cantidad');
         if ($stock === null || $stock < $request->cantidad) {
             return back()->with('error', 'No hay suficiente stock para esta operación.');
         }
-        if ($stock == 1) {
-            DB::table($request->table)->where('nombre', $request->tool)->update(['disponibilidad' => 'Ocupado']);
+        if ($stock != 0 ) {
+            DB::table($request->table)->where('nombreherramienta', $request->tool)->update(['disponibilidad' => 'Ocupado']);
         } /* else {
             if ($stock == 0) {
                 DB::table($request->table)->where('nombre', $request->tool)->update(['disponibilidad' => 'Ocupado']);
@@ -161,7 +161,7 @@ class PrestamoController extends Controller
 
         // If it's a new record, reduce stock
         if (!$id) {
-            DB::table($request->table)->where('nombre', $request->tool)->update(['cantidad' => $stock - $request->cantidad]);
+            DB::table($request->table)->where('nombreherramienta', $request->tool)->update(['cantidad' => $stock - $request->cantidad]);
         }
 
         if ($presta->save()) {
@@ -186,10 +186,10 @@ class PrestamoController extends Controller
         $presta = Prestamo::findOrFail($id);
 
         // Obtener el stock actual
-        $stock = DB::table($request->table)->where('nombre', $presta->articulo)->value('cantidad');
+        $stock = DB::table($request->table)->where('nombreherramienta', $presta->articulo)->value('cantidad');
 
         // Aumentar el stock con la cantidad devuelta
-        DB::table($request->table)->where('nombre', $presta->articulo)->update(['cantidad' => $stock + $request->cantidad]);
+        DB::table($request->table)->where('nombreherramienta', $presta->articulo)->update(['cantidad' => $stock + $request->cantidad]);
 
         // Actualizar la fecha de regreso en el registro de préstamo
         $presta->fechaRegreso = $request->fechaRegreso;
@@ -197,7 +197,7 @@ class PrestamoController extends Controller
 
         // Cambiar disponibilidad a "Disponible" si la cantidad es mayor a 1
         if ($stock + $request->cantidad > 1) {
-            DB::table($request->table)->where('nombre', $presta->articulo)->update(['disponibilidad' => 'Disponible']);
+            DB::table($request->table)->where('nombreherramienta', $presta->articulo)->update(['disponibilidad' => 'Disponible']);
         }
 
         return back()->with('success', 'Artículo devuelto exitosamente.');
@@ -210,11 +210,11 @@ class PrestamoController extends Controller
         $toolTable = $prestamo->area;
         $toolName = $prestamo->articulo;
 
-        $stock = DB::table($toolTable)->where('nombre', $toolName)->value('cantidad');
-        DB::table($toolTable)->where('nombre', $toolName)->update(['cantidad' => $stock + $prestamo->cantidadPresta]);
+        $stock = DB::table($toolTable)->where('nombreherramienta', $toolName)->value('cantidad');
+        DB::table($toolTable)->where('nombreherramienta', $toolName)->update(['cantidad' => $stock + $prestamo->cantidadPresta]);
 
         // Actualizar la disponibilidad
-        DB::table($toolTable)->where('nombre', $toolName)->update(['disponibilidad' => 'Disponible']);
+        DB::table($toolTable)->where('nombreherramienta', $toolName)->update(['disponibilidad' => 'Disponible']);
 
         return redirect()->route('dashboard')->with('success', 'Artículo devuelto exitosamente.');
     }
@@ -287,9 +287,9 @@ class PrestamoController extends Controller
         try {
             $prestamo = Prestamo::findOrFail($id);
             $prestamo->delete();
-            return back()->with('correcto', 'Prestación eliminada correctamente');
+            return back()->with('success', 'Prestación eliminada correctamente');
         } catch (\Exception $e) {
-            return back()->with('incorrecto', 'Error al eliminar la prestación');
+            return back()->with('insuccess', 'Error al eliminar la prestación');
         }
     }
 }
