@@ -13,55 +13,43 @@ class PrestamoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    /* public function index()
-    {
-        $specificTables = ['paileria', 'tabla_ejemplo', 'users'];
-        // Obtener todos los registros de la tabla 'tabla_ejemplo'
-        $datos = DB::select('SHOW TABLES');
-
-        // Extrae los nombres de las tablas del resultado
-        $datosT = array_map(function ($table) {
-            return $table->{'Tables_in_' . env('DB_DATABASE')};
-        }, $datos);
-
-        $filteredTables = array_intersect($datosT, $specificTables);
-
-        $prestamos = Prestamo::all();
-        return view('dashboard', compact('prestamos', 'filteredTables'));
-    } */
 
     public function index(Request $request)
     {
-        // List of specific tables to display in the dashboard
+        // Lista de tablas específicas que deseas filtrar
         $specificTables = ['almacen', 'ingenieria', 'oficina_administrativa', 'paileria'];
 
-        // Get all table names in the database
+        // Obtén todas las tablas de la base de datos
         $tablesInDatabase = DB::select('SHOW TABLES');
 
-        // Extract the table names and filter them based on the specific tables list
-        $tableNames = array_map(function ($table) {
-            return $table->{'Tables_in_' . env('DB_DATABASE')};
-        }, $tablesInDatabase);
+        // Verifica que el nombre de la base de datos esté configurado
+        $databaseName = env('DB_DATABASE');
+        if (!$databaseName) {
+            throw new \Exception('El nombre de la base de datos no está configurado correctamente en .env');
+        }
+
+        // Extraer los nombres de las tablas y filtrarlas basadas en la lista de tablas específicas
+        $tableNames = [];
+        foreach ($tablesInDatabase as $table) {
+            $property = 'Tables_in_' . $databaseName;
+            if (isset($table->$property)) {
+                $tableNames[] = $table->$property;
+            } else {
+                throw new \Exception("La propiedad '$property' no existe en el resultado de la consulta.");
+            }
+        }
+
+        // Filtrar las tablas que coincidan con las específicas
         $filteredTables = array_intersect($tableNames, $specificTables);
 
-        // Fetch all loan records from the database
+        // Obtener todos los registros de préstamo de la base de datos
         $prestamos = Prestamo::all();
 
         return view('dashboard', compact('prestamos', 'filteredTables'));
     }
 
-    /* public function fetchTableData(Request $request)
-    {
-        $tableName = $request->input('table');
-        $specificTables = ['paileria', 'tabla_ejemplo', 'users'];
 
-        if (!in_array($tableName, $specificTables)) {
-            return response()->json(['error' => 'Invalid table'], 400);
-        }
 
-        $data = DB::table($tableName)->get();
-        return response()->json($data);
-    } */
     public function fetchTableData(Request $request)
     {
         $tableName = $request->input('table');
@@ -81,42 +69,7 @@ class PrestamoController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    /* public function create(Request $request)
-    {
-        $request->validate([
-            'table' => 'required|string|max:255',
-            'nombreRecibe' => 'required|string|max:255',
-            'tool' => 'required|string|max:255',
-            'cantidad' => 'required|integer|min:1',
-            'fechaSalida' => 'required|date',
-            'fechaRegreso' => 'nullable|date|after_or_equal:fechaSalida',
-            'observacion' => 'nullable|string',
-            'uso' => 'nullable|string',
-        ]);
 
-        $presta = new Prestamo([
-            'area' => $request->table,
-            'nombreRecibe' => $request->nombreRecibe,
-            'articulo' => $request->tool,
-            'cantidadPresta' => $request->cantidad,
-            'fechaSalida' => $request->fechaSalida,
-            'fechaRegreso' => $request->fechaRegreso,
-            'observacion' => $request->observacion,
-            'uso' => $request->uso
-        ]);
-
-        // Verificar si hay suficiente stock
-        if ($presta->cantidad < $request->cantidadPresta) {
-            return redirect()->back()->with('error', 'No hay suficiente stock para esta operación.');
-        }
-        $presta->cantidad -= $request->cantidadPresta;
-
-        if ($presta->save()) {
-            return back()->with('success', 'Prestación registrada exitosamente.');
-        } else {
-            return back()->with('insuccess', 'Prestación no registrada.');
-        }
-    } */
 
     /**
      * Store a newly created resource in storage.
@@ -151,7 +104,7 @@ class PrestamoController extends Controller
         if ($stock === null || $stock < $request->cantidad) {
             return back()->with('error', 'No hay suficiente stock para esta operación.');
         }
-        if ($stock != 0 ) {
+        if ($stock != 0) {
             DB::table($request->table)->where('nombreherramienta', $request->tool)->update(['disponibilidad' => 'Ocupado']);
         } /* else {
             if ($stock == 0) {
@@ -238,50 +191,12 @@ class PrestamoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    /* public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'table' => 'required|string|max:255',
-            'nombreRecibe' => 'required|string|max:255',
-            'tool' => 'required|string|max:255',
-            'cantidad' => 'required|integer|min:1',
-            'fechaSalida' => 'required|date',
-            'fechaRegreso' => 'nullable|date|after_or_equal:fechaSalida',
-            'observacion' => 'nullable|string',
-            'uso' => 'nullable|string',
-        ]);
 
-        try {
-            $presta = Prestamo::findOrFail($id);
-            $presta->area = $request->input('table');
-            $presta->nombreRecibe = $request->input('nombreRecibe');
-            $presta->articulo = $request->input('tool');
-            $presta->cantidadPresta = $request->input('cantidad');
-            $presta->fechaSalida = $request->input('fechaSalida');
-            $presta->fechaRegreso = $request->input('fechaRegreso');
-            $presta->observacion = $request->input('observacion');
-            $presta->uso = $request->input('uso');
-
-            $presta->save();
-            return back()->with('correcto', 'Prestación actualizada correctamente');
-        } catch (\Throwable $th) {
-            return back()->with('incorrecto', 'Error al actualizar datos');
-        }
-    } */
 
     /**
      * Remove the specified resource from storage.
      */
-    /* public function destroy(String $id)
-    {
-        try {
-            $prestamo = Prestamo::findOrFail($id);
-            $prestamo->delete();
-            return back()->with('correcto', 'Prestación eliminada correctamente');
-        } catch (\Exception $e) {
-            return back()->with('incorrecto', 'Error al eliminar la prestación');
-        }
-    } */
+
     public function destroy(String $id)
     {
         try {

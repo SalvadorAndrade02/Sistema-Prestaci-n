@@ -85,10 +85,10 @@
 
 <body>
     <header>
-        <img src="images\membrete 1.png" style="width: 105%; height:auto">
+        <img src="images/membrete 1.png" style="width: 105%; height:auto">
     </header>
     <br>
-    <img src="images\titulo.png" style="width: 100%; height:auto">
+    <img src="images/titulo.png" style="width: 100%; height:auto">
     <br>
     <h1>Datos de Prestación</h1>
     <br>
@@ -142,7 +142,7 @@
     </div>
     <br>
     <footer class="footer">
-        <img src="images\menbrete pie.png" style="width: 100%; height:auto">
+        <img src="images/menbrete pie.png" style="width: 100%; height:auto">
     </footer>
 </body>
 

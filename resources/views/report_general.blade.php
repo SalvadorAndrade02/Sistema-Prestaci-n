@@ -69,10 +69,10 @@
 
 <body>
     <header>
-        <img src="images\membrete 1.png" style="width: 105%; height:auto">
+        <img src="images/membrete 1.png" style="width: 105%; height:auto">
     </header>
     <div class="content">
-        <img src="images\titulo.png" style="width: 100%; height:auto">
+        <img src="images/titulo.png" style="width: 100%; height:auto">
         <h1>Informe Mensual de Prestaciones</h1>
         <table>
             <thead>
@@ -104,7 +104,7 @@
         </table>
     </div>
     <footer class="footer">
-        <img src="images\menbrete pie.png" style="width: 100%; height:auto">
+        <img src="images/menbrete pie.png" style="width: 100%; height:auto">
     </footer>
 </body>
 
