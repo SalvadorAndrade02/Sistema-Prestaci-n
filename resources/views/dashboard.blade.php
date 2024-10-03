@@ -180,7 +180,7 @@
                                             <label style="color:black">Nombre de quien recibe</label>
                                             <select class="form-control" name="nombreRecibe" id="nombreRecibe">
                                                 @foreach($usuarios as $usuario)
-                                                <option value="{{ $usuario->id }}">{{ $usuario->name }}</option> <!-- Asegúrate de que el campo "nombre" exista -->
+                                                <option value="{{ $usuario->name }}">{{ $usuario->name }}</option> <!-- Asegúrate de que el campo "nombre" exista -->
                                                 @endforeach
                                             </select>
                                         </div>
