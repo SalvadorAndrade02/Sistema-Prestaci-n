@@ -19,38 +19,77 @@
                 </div>
             </div>
 
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button style="color: white">
-                            <div>{{ Auth::user()->name }}</div>
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top:5px;">
+                <!-- Search Form -->
+                <form class="d-flex" role="search" onsubmit="event.preventDefault(); searchTable();" style="flex-grow: 1;">
+                    <input class="form-control me-2" type="search" id="searchInput" style="background-color: #1F2937; color: white" placeholder aria-label>
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
 
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')" style="color: black;">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+                <script>
+        function searchTable() {
+            // Obtener el valor del input de búsqueda
+            let input = document.getElementById('searchInput').value.toUpperCase();
+            // Obtener la tabla y las filas de la tabla
+            let table = document.getElementById('myTable');
+            let tr = table.getElementsByTagName('tr');
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
+            // Recorrer todas las filas, excepto la primera que es la cabecera
+            for (let i = 1; i < tr.length; i++) {
+                let td = tr[i].getElementsByTagName('td');
+                let match = false;
 
-                            <x-dropdown-link :href="route('logout')" 
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();" style="color: black;">
-                                {{ __('Log Out') }}
+                // Recorrer todas las celdas en la fila actual
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        // Verificar si el contenido de la celda coincide con la búsqueda
+                        if (td[j].innerText.toUpperCase().indexOf(input) > -1) {
+                            match = true;
+                            break;
+                        }
+                    }
+                }
+
+                // Mostrar u ocultar la fila según si hubo coincidencia
+                tr[i].style.display = match ? '' : 'none';
+            }
+        }
+    </script>
+
+                <!-- Settings Dropdown -->
+                <div class="hidden sm:flex sm:items-center sm:ms-6" style="margin-left: 10px;">
+                    <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
+                            <button style="color: white">
+                                <div>{{ Auth::user()->name }}</div>
+                                <div class="ms-1">
+                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <x-dropdown-link :href="route('profile.edit')" style="color: black;">
+                                {{ __('Profile') }}
                             </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
+
+                            <!-- Authentication -->
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <x-dropdown-link :href="route('logout')"
+                                    onclick="event.preventDefault();
+                                    this.closest('form').submit();" style="color: black;">
+                                    {{ __('Log Out') }}
+                                </x-dropdown-link>
+                            </form>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
             </div>
+
 
             <!-- Hamburger -->
             <!-- <div class="-me-2 flex items-center sm:hidden">
@@ -89,7 +128,7 @@
                     @csrf
 
                     <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>

@@ -178,8 +178,13 @@
                                         </div>
                                         <div class="mb-3">
                                             <label style="color:black">Nombre de quien recibe</label>
-                                            <input type="text" class="form-control" name="nombreRecibe" id="nombreRecibe">
+                                            <select class="form-control" name="nombreRecibe" id="nombreRecibe">
+                                                @foreach($usuarios as $usuario)
+                                                <option value="{{ $usuario->id }}">{{ $usuario->name }}</option> <!-- Asegúrate de que el campo "nombre" exista -->
+                                                @endforeach
+                                            </select>
                                         </div>
+
                                         <div class="mb-3">
                                             <label style="color:black">Artículo a Prestar</label>
                                             <select class="form-select" aria-label="Default select example" name="tool" id="tools">
@@ -199,6 +204,18 @@
                                                 <label style="color:black">Fecha de Salida</label>
                                                 <input style="color:black" type="date" class="form-control" name="fechaSalida" id="fechaSalida">
                                             </div>
+
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function() {
+                                                    // Obtiene la fecha actual
+                                                    let today = new Date();
+                                                    // Formatea la fecha a yyyy-mm-dd para el input de tipo date
+                                                    let formattedDate = today.toISOString().split('T')[0];
+                                                    // Asigna la fecha formateada al campo de fecha
+                                                    document.getElementById('fechaSalida').value = formattedDate;
+                                                });
+                                            </script>
+
                                             <div class="col">
                                                 <label style="color:black">Fecha de Regreso</label>
                                                 <input style="color:black" type="date" class="form-control" name="fechaRegreso" id="fechaRegreso">
@@ -223,7 +240,7 @@
                     </div>
 
 
-                    <table class="table table-dark table-borderless">
+                    <table id="myTable" class="table table-dark table-borderless">
                         <thead>
                             <tr>
                                 <!-- <th scope="col">ID</th> -->

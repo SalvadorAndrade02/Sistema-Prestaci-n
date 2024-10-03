@@ -13,7 +13,7 @@ Route::get('/', function () {
 });
 
 /* Route::get('/fetch-table-data', [TablaEjemploController::class, 'fetchTableData']); */
-Route::get('/prestamos', [PrestamoController::class, 'index', 'fetchTableData']);
+Route::get('/prestamos', [PrestamoController::class, 'index', 'fetchTableData', 'getUsuarios']);
 Route::get('/get-tools/{table}', [TableController::class, 'getTools']);
 Route::get('/get-quantity/{table}/{tool}', [TableController::class, 'getQuantity']);
 Route::post('/update-quantity', [TableController::class, 'updateQuantity']);

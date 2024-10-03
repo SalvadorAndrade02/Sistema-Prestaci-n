@@ -44,8 +44,11 @@ class PrestamoController extends Controller
 
         // Obtener todos los registros de préstamo de la base de datos
         $prestamos = Prestamo::all();
-
-        return view('dashboard', compact('prestamos', 'filteredTables'));
+        // Obtén todos los usuarios de la base de datos externa
+        $usuarios = DB::table('users')->select('id', 'name')->get(); // Asegúrate de que el nombre de la tabla y el campo coincidan
+    
+        // Retorna la vista con los usuarios
+        return view('dashboard', compact('prestamos', 'filteredTables', 'usuarios'));
     }
 
 
@@ -65,6 +68,7 @@ class PrestamoController extends Controller
 
         return response()->json($data);
     }
+    
 
     /**
      * Show the form for creating a new resource.
